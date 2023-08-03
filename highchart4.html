@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+    <figure class="highcharts-figure">
+        <div id="container"></div>
+    </figure>
+
+    <script>
+        // Realizar la solicitud a la ruta que definiste en Flask
+        fetch('/get_data')
+        .then(response => response.json())  // Convertir la respuesta en un objeto de JavaScript
+        .then(data => {  // Usar el objeto resultante (data)
+            const Disponibilidad4 = data.Disponibilidad4;  // Obtener Disponibilidad1 de data
+            const Calidad4 = data.Calidad4;  // Obtener Calidad1 de data
+            const rendimiento_global4 = data.rendimiento_global4;  // Obtener rend1 de data
+    
+            // tu código JavaScript va aquí
+            Highcharts.chart('container', {
+    
+                chart: {
+                    type: 'solidgauge',
+                    height: '110%',
+                    width: 110,
+                },
+    
+                exporting: {
+                    enabled: true,
+                    buttons: {
+                        contextButton: {
+                            align: 'right',
+                            verticalAlign: 'top',
+                            x: 15,
+                        }
+                    }
+                },
+    
+                title: {
+                    text: null,
+                    enabled: false
+                },
+    
+                tooltip: {
+                    borderWidth: 0,
+                    backgroundColor: 'none',
+                    shadow: false,
+                    style: {
+                        fontSize: '12px'
+                    },
+                    valueSuffix: '%',
+                    pointFormat: '{series.name}<br><span style="font-size:12px; color: black; font-weight: bold">{point.y}</span>',
+                    positioner: function(labelWidth) {
+                        return {
+                            x: 10,
+                            y: 10
+                        };
+                    }
+                },
+    
+                pane: {
+                    startAngle: 0,
+                    endAngle: 360,
+                    background: [{
+                        outerRadius: '112%',
+                        innerRadius: '88%',
+                        backgroundColor: Highcharts.color(Highcharts.getOptions().colors[0])
+                            .setOpacity(0.3)
+                            .get(),
+                        borderWidth: 0
+                    }, {
+                        outerRadius: '87%',
+                        innerRadius: '63%',
+                        backgroundColor: Highcharts.color(Highcharts.getOptions().colors[1])
+                            .setOpacity(0.3)
+                            .get(),
+                        borderWidth: 0
+                    }, {
+                        outerRadius: '62%',
+                        innerRadius: '38%',
+                        backgroundColor: Highcharts.color(Highcharts.getOptions().colors[2])
+                            .setOpacity(0.3)
+                            .get(),
+                        borderWidth: 0
+                    }]
+                },
+    
+                yAxis: {
+                    min: 0,
+                    max: 100,
+                    lineWidth: 0,
+                    tickPositions: []
+                },
+    
+                plotOptions: {
+                    solidgauge: {
+                        dataLabels: {
+                            enabled: false
+                        },
+                        linecap: 'round',
+                        stickyTracking: false,
+                        rounded: true
+                    }
+                },
+    
+                series: [{
+                    name: 'Calidad',
+                    data: [{
+                        color: Highcharts.getOptions().colors[0],
+                        radius: '112%',
+                        innerRadius: '88%',
+                        y: Calidad4
+                    }]
+                }, {
+                    name: 'Rendimiento',
+                    data: [{
+                        color: Highcharts.getOptions().colors[1],
+                        radius: '87%',
+                        innerRadius: '63%',
+                        y: rendimiento_global4
+                    }]
+                }, {
+                    name: 'Disponibilidad',
+                    data: [{
+                        color: Highcharts.getOptions().colors[2],
+                        radius: '62%',
+                        innerRadius: '38%',
+                        y: Disponibilidad4
+                    }]
+                }]
+            });
+        })  // Cierre correcto de la promesa
+        .catch(error => console.error(error));  // Manejo de errores
+    </script>
+</body>
+</html>

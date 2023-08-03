@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/solid-gauge.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+    <figure class="highcharts-figure">
+        <div id="container2"></div>
+    </figure>
+
+    <script>
+        // tu código JavaScript va aquí
+        (async () => {
+    
+            const response = await fetch('/get_data');
+            const dataJson = await response.json();
+    
+            // Utiliza la data de tu servidor
+            const rendl1_diario1 = dataJson.rendl1_diario1;
+
+             // Configuración de lenguaje en español
+            Highcharts.setOptions({
+                lang: {
+                    months: [
+                        'Enero', 'Febrero', 'Marzo', 'Abril',
+                        'Mayo', 'Junio', 'Julio', 'Agosto',
+                        'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
+                    ],
+                    weekdays: [
+                        'Domingo', 'Lunes', 'Martes', 'Miercoles',
+                        'Jueves', 'Viernes', 'Sábado'
+                    ],
+                    shortMonths: [
+                        'Ene', 'Feb', 'Mar', 'Abr',
+                        'May', 'Jun', 'Jul', 'Ago',
+                        'Sep', 'Oct', 'Nov', 'Dic'
+                    ]
+                }
+            });
+    
+            Highcharts.chart('container2', {
+                chart: {
+                    zoomType: 'x',
+                    height: 130,  // Ajusta este valor para cambiar la altura del gráfico
+                    width: 280
+                },
+                title: {
+                    text: 'Rendimiento historico',
+                    align: 'center',
+                    style: {
+                        color: '#43948e',  // Cambia esto al color que prefieras
+                        fontSize: '12px'  // Cambia esto al tamaño de fuente que prefieras
+                    },
+                },
+                xAxis: {
+                    type: 'datetime',
+                    labels: {
+                        style: {
+                            fontSize: '8px' // Cambia esto al tamaño de fuente que prefieras para el eje X
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: null,
+                        enabled: false
+                    },
+                    labels: {
+                        style: {
+                            fontSize: '8px' // Cambia esto al tamaño de fuente que prefieras para el eje Y
+                        }
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    area: {
+                        fillColor: {
+                            linearGradient: {
+                                x1: 0,
+                                y1: 0,
+                                x2: 0,
+                                y2: 1
+                            },
+                            stops: [
+                                [0, Highcharts.getOptions().colors[0]],
+                                [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                            ]
+                        },
+                        marker: {
+                            radius: 2
+                        },
+                        lineWidth: 1,
+                        states: {
+                            hover: {
+                                lineWidth: 1
+                            }
+                        },
+                        threshold: null
+                    }
+                },
+    
+                series: [{
+                    type: 'area',
+                    name: 'Rendimiento por dia',
+                    data: rendl1_diario1
+                }]
+            });
+        })();
+        // Toda tu lógica de Highcharts, incluyendo el objeto Highcharts.chart()
+        // Omitiendo las secciones de estilo, puedes agregarlas en Dash
+    </script>
+</body>
+</html>

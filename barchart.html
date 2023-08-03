@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/data.js"></script>
+    <script src="https://code.highcharts.com/modules/drilldown.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+</head>
+<body>
+    <figure class="highcharts-figure">
+        <div id="container3"></div>
+        <p class="highcharts-description"></p>
+    </figure>
+
+    <script>
+        (async () => {
+            // Obtener los datos del endpoint
+            const response = await fetch('/get_data')
+            const data = await response.json()
+    
+            // Transformar los datos para Highcharts
+            const seriesData = data.df_grouped1.map(item => ({
+                name: item.Responsable.trim(),
+                y: item.Duracion,
+            }));
+    
+            // Crear el gráfico
+            Highcharts.chart('container3', {
+                chart: {
+                    type: 'column',
+                    height: 130,  
+                    width: 280
+                },
+                title: {
+                    text: 'Tiempos perdidos',
+                    align: 'center',
+                    style: {
+                        color: '#43948e',
+                        fontSize: '12px'
+                    },
+                },
+                accessibility: {
+                    announceNewData: {
+                        enabled: true
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    labels: {
+                        rotation: 0, 
+                        style: {
+                            fontSize: '6px'
+                        }
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: null,
+                        enabled: false
+                    },
+                    labels: {
+                        style: {
+                            fontSize: '8px'
+                        }
+                    }
+                },
+                legend: {
+                    enabled: false
+                },
+                plotOptions: {
+                    series: {
+                        borderWidth: 0,
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.y:.1f} hrs'
+                        }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<span style="font-size:11px">{series.name}</span><br>',
+                    pointFormat: '<span style="color:{point.color}">{point.name}</span>: <b>{point.y:.2f} hrs</b><br/>'
+                },
+                series: [
+                    {
+                        name: 'Browsers',
+                        colorByPoint: true,
+                        data: seriesData
+                    }
+                ],
+            });
+        })()
+    </script>
+</body>
+</html>
